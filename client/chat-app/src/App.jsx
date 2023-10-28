@@ -29,18 +29,20 @@ function App() {
   return (
     <div className="App">
       {showChat ? (
-        <div className="max-w-md mx-auto mt-16 p-6 bg-white shadow-md rounded-lg">
-          <h3 className="text-2xl font-semibold mb-4 text-center">Chat App</h3>
+        <div className="max-w-md mx-auto mt-16 p-6 bg-gray-200 shadow-md rounded-lg">
+          <h3 className="text-2xl font-semibold mb-4 text-center border-none border-blue-700 bg-blue-500 p-2 text-white rounded-lg">
+            Join Chat
+          </h3>
           <input
             type="text"
             className="w-full p-2 rounded-md outline-none mb-2"
-            placeholder="Jack..."
+            placeholder="Username"
             onChange={(event) => setUsername(event.target.value)}
           />
           <input
             type="text"
             className="w-full p-2 rounded-md outline-none mb-4"
-            placeholder="Room id..."
+            placeholder="Room"
             onChange={(event) => setRoom(event.target.value)}
           />
           <button

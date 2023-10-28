@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdSend } from 'react-icons/io';
+// import ScrollToBottom from 'react-scroll-to-bottom';
 
 function Chat(props) {
   const [currentMessage, setCurrentMessage] = useState('');
-
+  const [messageList, setMessageList] = useState([]);
   const sendMessage = async () => {
     if (currentMessage !== '') {
       const messageData = {
@@ -17,30 +18,63 @@ function Chat(props) {
       };
 
       await props.socket.emit('send_message', messageData);
+      setMessageList((list) => [...list, messageData]);
+      setCurrentMessage('');
     }
   };
 
   useEffect(() => {
     props.socket.on('receive_message', (data) => {
-      console.log(data);
+      setMessageList((list) => [...list, data]);
     });
   }, [props.socket]);
+
   return (
-    <div className="max-w-md mx-auto mt-16 p-2 bg-white shadow-md overflow-hidden border border-blue-900">
+    <div className="max-w-md mx-auto mt-16 p-4 shadow-md overflow-hidden border bg-gray-300">
       {/* Chat header */}
       <div className="bg-blue-500 text-white py-3 px-4 rounded-2xl text-center">
-        <p className="text-2xl font-semibold">Live Chat</p>
+        <p className="text-2xl font-semibold">ChatsApp</p>
       </div>
 
       {/* Chat body */}
-      <div className="p-[160px] mt-2 border border-blue-700 rounded-2xl"></div>
+
+      <div className="p-4 space-y-4 h-80 overflow-y-auto mt-3">
+        {/* <ScrollToBottom className="w-full h-full overflow-y-scroll , overflow-x-hidden"> */}
+        {messageList.map((messageContent, index) => (
+          <div
+            key={index}
+            className={`${
+              messageContent.author === props.username
+                ? 'text-right'
+                : 'text-left'
+            }`}
+          >
+            <div
+              className={`${
+                messageContent.author === props.username
+                  ? 'bg-green-200 text-green-800'
+                  : 'bg-gray-200 text-gray-800'
+              } py-2 px-3 rounded-lg inline-block max-w-[70%] whitespace-pre-wrap`}
+            >
+              <p>{messageContent.message}</p>
+            </div>
+            <div className="text-xs text-black mt-1">
+              <p className="inline-block">
+                {messageContent.time} - {messageContent.author}
+              </p>
+            </div>
+          </div>
+        ))}
+        {/* </ScrollToBottom> */}
+      </div>
 
       {/* Chat footer */}
-      <div className="bg-gray-200 p-2 flex items-center">
+      <div className="p-2 flex items-center">
         <input
           type="text"
           className="w-full p-2 rounded-full outline-none"
-          placeholder="Hey..."
+          value={currentMessage}
+          placeholder="Message"
           onChange={(event) => setCurrentMessage(event.target.value)}
         />
         <button
