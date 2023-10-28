@@ -14,31 +14,45 @@ socket.on('connect_error', (err) => {
 function App() {
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
+  const [showChat, setShowChat] = useState(true);
 
   // click the button and join the room handle function
   const joinRoom = () => {
     if (username !== '' && room !== '') {
       socket.emit('join_room', room);
+      setShowChat(false);
     }
   };
 
   // click the button then join the room but not go to any http request. this is a amazing thing in socket.io. you can show this go to inspact -> network tab
 
   return (
-    <div>
-      <h3>Chat App</h3>
-      <input
-        type="text"
-        placeholder="Jack..."
-        onChange={(event) => setUsername(event.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Room id..."
-        onChange={(event) => setRoom(event.target.value)}
-      />
-      <button onClick={joinRoom}>Join a Room</button>
-      <Chat socket={socket} username={username} room={room} />
+    <div className="App">
+      {showChat ? (
+        <div className="max-w-md mx-auto mt-16 p-6 bg-white shadow-md rounded-lg">
+          <h3 className="text-2xl font-semibold mb-4 text-center">Chat App</h3>
+          <input
+            type="text"
+            className="w-full p-2 rounded-md outline-none mb-2"
+            placeholder="Jack..."
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <input
+            type="text"
+            className="w-full p-2 rounded-md outline-none mb-4"
+            placeholder="Room id..."
+            onChange={(event) => setRoom(event.target.value)}
+          />
+          <button
+            onClick={joinRoom}
+            className="bg-blue-500 text-white p-2 rounded-md w-full"
+          >
+            Join a Room
+          </button>
+        </div>
+      ) : (
+        <Chat socket={socket} username={username} room={room} />
+      )}
     </div>
   );
 }
